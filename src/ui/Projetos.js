@@ -118,8 +118,8 @@ export default class Projetos extends Component {
         return (
             <div>
                 <div>
-                    <button type="button" className="btn btn-info" data-toggle="modal" data-target="#exampleModal" style={{ marginTop: "10px", marginBottom: "15px" }}>Criar Projeto</button>
-                    <div className="row" style={{ justifyContent: "center" }}>
+                    <button type="button" className="btn btn-info" data-toggle="modal" data-target="#exampleModal" style={{ marginTop: "10px", marginBottom: "15px", justifyContent:"center", marginLeft: "50px"  }}>Criar Projeto</button>
+                    <div className="row" style={{ display: "flex", flexDirection: "row", justifyContent:"center", marginLeft: "50px" }}>
                         {Object
                             .keys(this.state.projetos)
                             .map(key => this.listItem(key, this.state.projetos[key]))}
