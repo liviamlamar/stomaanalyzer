@@ -45,6 +45,19 @@ export default class Login extends Component {
     // AUTENTICANDO COM EMAIL E SENHA
     authenticate(e) {
         e.preventDefault();
+
+        // window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha', {
+        //     'callback': (response) => {
+        //       // reCAPTCHA solved, allow signInWithPhoneNumber.
+        //       // ...
+        //     },
+        //     'expired-callback': () => {
+        //       // Response expired. Ask user to solve reCAPTCHA again.
+        //       // ...
+        //     }
+        //   })
+        //   window.recaptchaVerifier.render()
+
         firebaseApp.auth().signInWithEmailAndPassword(this.refs.email.value, this.refs.password.value).then(signedUser => {
             this.setState({
                 user: signedUser,
@@ -55,6 +68,7 @@ export default class Login extends Component {
             var errorMessage = error.message;
             console.log(errorCode, errorMessage);
         });
+        
     }
 
 
@@ -103,6 +117,7 @@ export default class Login extends Component {
         // })
     }
 
+    
 
     render() {
         return (
@@ -138,11 +153,11 @@ export default class Login extends Component {
                                 </div>
                             </div>
 
-                            {/* <div id="recaptcha-box">
+                            <div id="recaptcha-box">
                                 <form action="" method="get">
                                     <div className="g-recaptcha" data-sitekey="6Lc3zFsUAAAAABV3k96g3xOthug8--QAcF3xoi9a"></div>
                                 </form>
-                            </div> */}
+                            </div>
 
                             <div id="botoes">
                                 <div className="btn-group">
