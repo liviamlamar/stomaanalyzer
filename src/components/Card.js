@@ -5,9 +5,7 @@ const Card = (props) => {
     return (
         <div key={props.chave} className="col-mb-3" style={{ marginRight: '10px' }}>
             <div className="card" style={{ maxWidth: "18rem", marginBottom: "10px" }}>
-                <div className="card-body">
-                    <img src={props.endereco} alt='imagem' style={{ width: "16rem" }} />
-                </div>
+                <img src={props.endereco} alt='imagem' style={{ width: "250px", height: "200px" }} />
             </div>
         </div>
     )
