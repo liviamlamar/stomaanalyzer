@@ -1,0 +1,23 @@
+{
+  "name": "tcc",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "datatables.net-dt": "^1.10.16",
+    "firebase": "^4.10.1",
+    "papaparse": "^4.5.0",
+    "re-base": "^3.2.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-firebase-file-uploader": "^2.4.1",
+    "react-rebase": "^1.0.5",
+    "react-router": "^3.2.0",
+    "react-scripts": "1.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

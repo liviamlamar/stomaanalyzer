@@ -1,0 +1,16 @@
+.container-foto {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 96.8%;
+    height: 100%;
+    margin-left: 44px;
+  }
+  
+  .container-foto img {
+    position: inherit;
+    top: inherit;
+    left: inherit;
+    width: inherit;
+    cursor: pointer;
+  }

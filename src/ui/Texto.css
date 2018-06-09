@@ -1,0 +1,154 @@
+@media (max-width: 576px){
+    #title{
+        margin-bottom: 20px;
+    }
+
+    #sub-title{
+        font-size: 1.2em;
+        font-weight: 570;
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+    
+    #texto{
+        text-align: justify;
+    }
+
+    #legenda{
+        font-size: 10px;
+    }
+    
+    #div-imagem{
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    #imagem{
+        width: 300px;
+        height: 200px
+    }
+ }
+
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 768px){ 
+    #title{
+        margin-bottom: 20px;
+    }
+
+    #sub-title{
+        font-size: 1.2em;
+        font-weight: 570;
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+    
+    #texto{
+        text-align: justify;
+    }
+    
+    #legenda{
+        font-size: 10px;
+    }
+
+    #div-imagem{
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    #imagem{
+        width: 400px;
+        height: 200px
+    }
+ }
+
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 992px){ 
+    #title{
+        margin-bottom: 20px;
+    }
+
+    #sub-title{
+        font-size: 1.2em;
+        font-weight: 570;
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+    
+    #texto{
+        text-align: justify;
+    }
+
+    #legenda{
+        font-size: 10px;
+    }
+    
+    #div-imagem{
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    #imagem{
+        width: 400px;
+        height: 200px
+    }
+ }
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+    #title{
+        margin-bottom: 20px;
+    }
+    
+    #sub-title{
+        font-size: 1.2em;
+        font-weight: 570;
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+
+    #texto{
+        text-align: justify;
+    }
+
+    #legenda{
+        font-size: 10px;
+    }
+    
+    #div-imagem{
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+ }
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+    #title{
+        margin-bottom: 20px;
+    }
+
+    #sub-title{
+        font-size: 1.2em;
+        font-weight: 570;
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+    
+    #texto{
+        text-align: justify;
+    }
+
+    #legenda{
+        font-size: 10px;
+    }
+    
+    #div-imagem{
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+ }
