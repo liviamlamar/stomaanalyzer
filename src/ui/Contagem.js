@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
 import FileUploader from 'react-firebase-file-uploader'
-// import ExcellentExport from 'excellentexport'
-// import firebase from 'firebase'
 import { firebaseApp, base } from '../firebase/Firebase'
 import { idProjeto } from '../ui/Projetos'
 import Pin from '../components/Pin'
 import './Contagem.css'
-import Table from '../components/Table'
-// import Papa from 'papaparse'
-// import ExcellentExport from 'excellentexport'
-// import TableExport from 'tableexport'
-// import { excelExportJs } from 'excelExportJs';
+import ReactExport from "react-data-export"
+
 
 const style = {
     foto: {
@@ -37,7 +32,7 @@ export default class Contagem extends Component {
         this.pin = 0
 
         this.state = {
-            marcadores: [], // Array onde serão guardados os estados de cada marcado (posição no eixo X, posição no eixo Y, contador, display)
+            marcadores: [],
             counter: 0,
             containerWidth: 0,
             containerHeight: 0,
@@ -55,9 +50,9 @@ export default class Contagem extends Component {
         this.calcularIndice = this.calcularIndice.bind(this)
         this.calcularDensidade = this.calcularDensidade.bind(this)
         this.handlePosition = this.handlePosition.bind(this)
-        this.salvarDados = this.salvarDados.bind(this)
+        // this.salvarDados = this.salvarDados.bind(this)
         this.tableToExcel = this.tableToExcel.bind(this)
-        this.apagarPin = this.apagarPin.bind(this)
+        // this.apagarPin = this.apagarPin.bind(this)
     }
 
     state = {
@@ -110,6 +105,7 @@ export default class Contagem extends Component {
         )
     }
 
+
     contagemEstomatos = (e) => {
         e.preventDefault();
         console.log("estomatos")
@@ -137,6 +133,8 @@ export default class Contagem extends Component {
         this.calcularIndice()
     }
 
+
+
     contagemEpidermicas = (e) => {
         e.preventDefault();
         console.log("celulas ep")
@@ -163,6 +161,8 @@ export default class Contagem extends Component {
         this.calcularIndice()
     }
 
+
+
     calcularIndice() {
         var estomatos = this.state.numeroEstomatos
         var celulasep = this.state.numeroCelulasEp
@@ -174,6 +174,7 @@ export default class Contagem extends Component {
         })
     }
 
+
     calcularDensidade() {
         var estomatos = this.state.numeroEstomatos
         var area = this.refs.area.value
@@ -183,12 +184,14 @@ export default class Contagem extends Component {
         })
     }
 
+
     handleUploadStart = () => this.setState({ isUploading: true, progress: 0 });
     handleProgress = (progress) => this.setState({ progress });
     handleUploadError = (error) => {
         this.setState({ isUploading: false });
         console.error(error);
     }
+
     handleUploadSuccess = (filename) => {
         this.setState({ foto: filename, progress: 100, isUploading: false });
         firebaseApp.storage().ref('/imagens').child(filename).getDownloadURL().then(url => this.setState({ fotoURL: url })
@@ -205,181 +208,58 @@ export default class Contagem extends Component {
         })
     };
 
-    salvarDados() {
-        // var imgKey = firebase.database().ref(uid + '/' + idProjeto + '/imagens/').child(this.state.foto).key;
-        // console.log(imgKey)
-        // var keyImg
-        // {
-        //     Object
-        //         .keys(this.state.fotos)
-        //         .map(key, this.state.fotos[key])
-        // }
-        base.push(uid + '/' + idProjeto + '/dadosContagem/', {
-            data: {
-                filename: this.state.foto,
-                marcadores: this.state.marcadores,
-                numeroEstomatos: this.state.numeroEstomatos,
-                numeroCelulasEp: this.state.numeroCelulasEp,
-                resultado: this.state.resultado,
-                densidade: this.state.densidade
-            }
-        })
-    }
 
-    // tableToExcel(context) {
-    //     var sheet = context.workbook.worksheets.getItem("Sample");
-    //     var expensesTable = sheet.tables.add("A1:E1", true /*hasHeaders*/);
-    //     expensesTable.name = "Dados da Contagem";
-    
-    //     expensesTable.getHeaderRowRange().values = [["NE", "CE", "IE", "A", "DE"]];
-    
-    //     expensesTable.rows.add(null /*add rows to the end of the table*/, [
-    //         [this.state.numeroEstomatos, this.state.numeroCelulasEp, this.state.resultado, this.refs.area.value, this.state.densidade]
-    //     ]);
-
-    //     if (Office.context.requirements.isSetSupported("ExcelApi", 1.2)) {
-    //         sheet.getUsedRange().format.autofitColumns();
-    //         sheet.getUsedRange().format.autofitRows();
-    //     }
-    
-    //     sheet.activate();
-    
-    //     return context.sync();
+    // salvarDados() {
+    //     base.push(uid + '/' + idProjeto + '/dadosContagem/', {
+    //         data: {
+    //             filename: this.state.foto,
+    //             marcadores: this.state.marcadores,
+    //             numeroEstomatos: this.state.numeroEstomatos,
+    //             numeroCelulasEp: this.state.numeroCelulasEp,
+    //             resultado: this.state.resultado,
+    //             densidade: this.state.densidade
+    //         }
+    //     })
     // }
+
 
     tableToExcel() {
-        var tabela = <table id="datatable">
-        <thead>
-          <tr id="cabeca-tabela">
-            <th colspan="5">Dados Contagem</th>
-          </tr>
-        </thead>
+        console.log("export")
+        const ExcelFile = ReactExport.ExcelFile
+        const ExcelSheet = ReactExport.ExcelFile.ExcelSheet
+        const ExcelColumn = ReactExport.ExcelFile.ExcelColumn
 
-        <thead>
-          <tr>
-            <th>NE</th>
-            <th>CE</th>
-            <th>IE</th>
-            <th>A</th>
-            <th>DE</th>
-          </tr>
-        </thead>
+        const dataSet = [
+            {
+                ne: this.state.numeroEstomatos,
+                ce: this.state.numeroCelulasEp,
+                ie: this.state.resultado,
+                area: this.refs.area.value,
+                de: this.state.densidade
 
-        <tbody>
-          <tr>
-            <td id="ne">{this.state.numeroEstomatos}</td>
-            <td id="ce">{this.state.numeroCelulasEp}</td>
-            <td id="indice">{this.state.resultado}</td>
-            <td id="area">{this.refs.area.value}</td>
-            <td id="densidade">{this.state.densidade}</td>
-          </tr>
-        </tbody>	
-      </table>
-        
+            }
 
-        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tabela))
+        ]
 
-
-        // var tab_text="<table border='2px'><tr bgcolor='#87AFC6' style='height: 75px; text-align: center; width: 250px'>";
-        // var textRange; var j=0;
-        // var tab = tabela; // id of table
-        // for(j = 0 ; j < tab.rows.length ; j++)
-        // {
-        //     tab_text=tab_text;
-        //     tab_text=tab_text+tab.rows[j].innerHTML.toUpperCase()+"</tr>";
-        //     //tab_text=tab_text+"</tr>";
-        // }
-        // tab_text= tab_text+"</table>";
-        
-        // var ua = window.navigator.userAgent;
-        // var msie = ua.indexOf("MSIE ");
-        // var sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));
-        
-        
-        // return (sa);
-
+        return(
+        <ExcelFile>
+            <ExcelSheet data={dataSet} name="Dados">
+                <ExcelColumn label="NE" value="ne"/>
+                <ExcelColumn label="CE" value="ce"/>
+                <ExcelColumn label="IE" value="ie"/>
+                <ExcelColumn label="Área" value="area"/>
+                <ExcelColumn label="DE" value="de"/>
+            </ExcelSheet>
+        </ExcelFile>
+        )
     }
         
-        // var downloadLink
-        // var dataType = 'applicaiton/vmd.ms-excel'
-        // var tableSelect = tabela
-        // var tableHTML = tableSelect.outerHTML.replace("/ /g", '%20');
-        // downloadLink = document.createElement("a")
-        // document.body.appendChild(downloadLink)
-        // var filename = "download"
-        // if(navigator.msSaveOrOpenBlob){
-        //     var blob = new Blob(['\ufeff', tableHTML], {
-        //         type: dataType
-        //     })
-        //     navigator.msSaveOrOpenBlob(blob, filename)
-        // } else {
-        //     downloadLink.href = 'data:' + dataType + ', ' + tableHTML
-
-        //     downloadLink.download = filename
-
-        //     downloadLink.click()
-        // }
-        // }
-        // <Table id={"datatable"}
-        //                     ne={this.state.numeroEstomatos}
-        //                     ce={this.state.numeroCelulasEp}
-        //                     indice={this.state.resultado}
-        //                     area={this.refs.area.value}
-        //                     densidade={this.state.densidade} />
-
-        // tabela.convertToRange()
-
-        // const dados = [this.state.numeroEstomatos, this.state.numeroCelulasEp, this.state.resultado, this.refs.area.value, this.state.densidade]
-        // tabela = JSON.stringify(tabela.props)
-        // // var csv = Papa.unparse(tabela)
-        // window.open('data:application/vnd.ms-excel,' + encodeURIComponent(this.state.numeroEstomatos) + encodeURIComponent(this.state.numeroCelulasEp) + encodeURIComponent(this.state.resultado) + encodeURIComponent(this.refs.area.value) + encodeURIComponent(this.state.densidade))
-
-        // ExcellentExport.excel(this, "datatable", 'Dados')
-
-        //  var table = TableExport(tabela)
-        //  var exportData = table.getExportData()
 
 
-
-        // console.log(csv)
-    
-
-        // var blob = new Blob([tabela], { type: "text/plain;charset=utf-8" });
-        // blob.saveAs(blob, "filename.txt");
-
-
-        // tabela.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(VALUE));
-        // tabela.setAttribute('download', 'filename.csv');
-
-
-        // var name = "Dados"
-        // var uri = 'data:application/vnd.ms-excel;base64,'
-        //     , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
-        //     , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
-        //     , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
-        // return function (tabela, name) {
-        //     if (!tabela.nodeType) tabela = tabela
-        //     var ctx = { worksheet: name || 'Worksheet', tabela: tabela.innerHTML }
-        //     window.location.href = uri + base64(format(template, ctx))
-        // }
-
-
-    // ExcellentExport.excel(this, 'tabela', 'Dados');
-
-    // var uri = 'data:application/vnd.ms-excel;base64,'
-    //   , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
-    //   , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-    //   , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-    // return function(table, name) {
-    //   if (!table.nodeType) table = document.getElementById(table)
-    //   var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
-    //   window.location.href = uri + base64(format(template, ctx))
+    // apagarPin(key){
+    //     console.log("Aqui", this.state.marcadores[key])
+    //     // this.state.marcadores[key].remove();
     // }
-
-    apagarPin(key){
-        console.log("Aqui", this.state.marcadores[key])
-        // this.state.marcadores[key].remove();
-    }
 
     render() {
         return (
@@ -443,7 +323,7 @@ export default class Contagem extends Component {
                                 <input ref="area" name="area" type="number" style={{ width: "60px" }} />
                                 <button type="button" className="btn btn-outline-secondary" style={{ marginTop: "10px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.calcularDensidade}>Calcular Densidade</button>
                                 <label className="col-form-label">Densidade: {this.state.densidade}</label>
-                                <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.salvarDados}>Salvar Dados</button>
+                                {/* <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.salvarDados}>Salvar Dados</button> */}
                                 <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.tableToExcel}>Exportar</button>
                             </div>
                         </div>
