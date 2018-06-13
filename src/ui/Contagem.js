@@ -50,7 +50,7 @@ export default class Contagem extends Component {
         this.calcularIndice = this.calcularIndice.bind(this)
         this.calcularDensidade = this.calcularDensidade.bind(this)
         this.handlePosition = this.handlePosition.bind(this)
-        // this.salvarDados = this.salvarDados.bind(this)
+        this.salvarDados = this.salvarDados.bind(this)
         this.tableToExcel = this.tableToExcel.bind(this)
         // this.apagarPin = this.apagarPin.bind(this)
     }
@@ -209,18 +209,19 @@ export default class Contagem extends Component {
     };
 
 
-    // salvarDados() {
-    //     base.push(uid + '/' + idProjeto + '/dadosContagem/', {
-    //         data: {
-    //             filename: this.state.foto,
-    //             marcadores: this.state.marcadores,
-    //             numeroEstomatos: this.state.numeroEstomatos,
-    //             numeroCelulasEp: this.state.numeroCelulasEp,
-    //             resultado: this.state.resultado,
-    //             densidade: this.state.densidade
-    //         }
-    //     })
-    // }
+    salvarDados() {
+        base.push(uid + '/' + idProjeto + '/dadosContagem/', {
+            data: {
+                filename: this.state.foto,
+                // marcadores: this.state.marcadores,
+                numeroEstomatos: this.state.numeroEstomatos,
+                numeroCelulasEp: this.state.numeroCelulasEp,
+                resultado: this.state.resultado,
+                area: this.refs.area.value,
+                densidade: this.state.densidade
+            }
+        })
+    }
 
 
     tableToExcel() {
@@ -323,7 +324,7 @@ export default class Contagem extends Component {
                                 <input ref="area" name="area" type="number" style={{ width: "60px" }} />
                                 <button type="button" className="btn btn-outline-secondary" style={{ marginTop: "10px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.calcularDensidade}>Calcular Densidade</button>
                                 <label className="col-form-label">Densidade: {this.state.densidade}</label>
-                                {/* <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.salvarDados}>Salvar Dados</button> */}
+                                <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.salvarDados}>Salvar Dados</button>
                                 <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.tableToExcel}>Exportar</button>
                             </div>
                         </div>
