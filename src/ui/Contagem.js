@@ -6,6 +6,10 @@ import Pin from '../components/Pin'
 import './Contagem.css'
 import ReactExport from "react-data-export"
 
+const ExcelFile = ReactExport.ExcelFile
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn
+
 
 const style = {
     foto: {
@@ -41,8 +45,9 @@ export default class Contagem extends Component {
             resultado: 0,
             densidade: 0,
             fotos: {},
-            border:[],
-            color:[]
+            border: [],
+            color: [],
+            dataSet: []
         }
 
         this.contagemEstomatos = this.contagemEstomatos.bind(this)
@@ -131,6 +136,7 @@ export default class Contagem extends Component {
 
 
         this.calcularIndice()
+        this.tableToExcel()
     }
 
 
@@ -159,6 +165,7 @@ export default class Contagem extends Component {
 
 
         this.calcularIndice()
+        this.tableToExcel()
     }
 
 
@@ -172,16 +179,18 @@ export default class Contagem extends Component {
         this.setState({
             resultado: total
         })
+        this.tableToExcel()
     }
 
 
-    calcularDensidade() {
-        var estomatos = this.state.numeroEstomatos
-        var area = this.refs.area.value
-        var densidade = estomatos / area
-        this.setState({
+    async calcularDensidade() {
+        var estomatos = await this.state.numeroEstomatos
+        var area = await this.refs.area.value
+        var densidade = await estomatos / area
+        await this.setState({
             densidade: densidade
         })
+        this.tableToExcel()
     }
 
 
@@ -226,35 +235,23 @@ export default class Contagem extends Component {
 
     tableToExcel() {
         console.log("export")
-        const ExcelFile = ReactExport.ExcelFile
-        const ExcelSheet = ReactExport.ExcelFile.ExcelSheet
-        const ExcelColumn = ReactExport.ExcelFile.ExcelColumn
+        const dataSet = []
+        const objeto = {
+            ne: this.state.numeroEstomatos,
+            ce: this.state.numeroCelulasEp,
+            ie: this.state.resultado,
+            area: this.refs.area.value,
+            de: this.state.densidade
 
-        const dataSet = [
-            {
-                ne: this.state.numeroEstomatos,
-                ce: this.state.numeroCelulasEp,
-                ie: this.state.resultado,
-                area: this.refs.area.value,
-                de: this.state.densidade
+        }
 
-            }
+        dataSet.push(objeto)
 
-        ]
-
-        return(
-        <ExcelFile>
-            <ExcelSheet data={dataSet} name="Dados">
-                <ExcelColumn label="NE" value="ne"/>
-                <ExcelColumn label="CE" value="ce"/>
-                <ExcelColumn label="IE" value="ie"/>
-                <ExcelColumn label="Área" value="area"/>
-                <ExcelColumn label="DE" value="de"/>
-            </ExcelSheet>
-        </ExcelFile>
-        )
+        this.setState({
+            dataSet
+        })
     }
-        
+
 
 
     // apagarPin(key){
@@ -263,6 +260,7 @@ export default class Contagem extends Component {
     // }
 
     render() {
+        console.log(this.state.dataSet)
         return (
             <div>
                 <div className="container-foto" ref={ref => this.container = ref}>
@@ -325,10 +323,22 @@ export default class Contagem extends Component {
                                 <button type="button" className="btn btn-outline-secondary" style={{ marginTop: "10px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.calcularDensidade}>Calcular Densidade</button>
                                 <label className="col-form-label">Densidade: {this.state.densidade}</label>
                                 <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.salvarDados}>Salvar Dados</button>
-                                <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.tableToExcel}>Exportar</button>
+                                {/* <button type="button" className="btn btn-success" style={{ marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }} onClick={this.tableToExcel}>Exportar</button> */}
+
+                                    <ExcelFile element={<button type="button" className="btn btn-success" style={{marginTop: "5px", display: "flex", marginLeft: "auto", marginRight: "auto"}}>Exportar</button>}> 
+                                        <ExcelSheet data={this.state.dataSet} name="Dados">
+                                            <ExcelColumn label="NE" value="ne" />
+                                            <ExcelColumn label="CE" value="ce" />
+                                            <ExcelColumn label="IE" value="ie" />
+                                            <ExcelColumn label="Área" value="area" />
+                                            <ExcelColumn label="DE" value="de" />
+                                        </ExcelSheet>
+                                    </ExcelFile>
                             </div>
+
                         </div>
                     </div>
+
                 </div>
                 {/* MODAL */}
 
