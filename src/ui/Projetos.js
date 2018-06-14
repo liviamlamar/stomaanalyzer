@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { browserHistory } from 'react-router'
-import { base, firebaseApp } from '../firebase/Firebase'
+import { base, firebaseApp, auth } from '../firebase/Firebase'
 
 var idProjeto = null
-var uid = null
+// var uid = null
 
 export default class Projetos extends Component {
     constructor(props) {
@@ -11,7 +11,10 @@ export default class Projetos extends Component {
 
         this.state = {
             projetos: {},
-            key: null
+            key: null,
+            search: '',
+            resultado: [],
+            user: ''
         }
 
         this.listItem = this.listItem.bind(this)
@@ -19,25 +22,36 @@ export default class Projetos extends Component {
         this.handleSave = this.handleSave.bind(this)
         this.getThisItem = this.getThisItem.bind(this)
         this.openProject = this.openProject.bind(this)
+        this.handleSearch = this.handleSearch.bind(this)
     }
 
     componentDidMount() {
-        firebaseApp.auth().onAuthStateChanged((signedUser) => {
-            uid = signedUser.uid
-            var uidString = String(uid)
+        auth.onAuthStateChanged((user) => {
 
-            base.syncState(uidString, {
+            this.setState({
+                user
+            })
+            base.syncState(user.uid, {
                 context: this,
                 state: 'projetos',
-                asArray: false
+                asArray: false,
+                queries: {
+                    orderByChild: 'nome'
+                }
             })
         })
+
+        // firebaseApp.auth().onAuthStateChanged((signedUser) => {
+        //     uid = signedUser.uid
+        // var uidString = await String(this.state.user.uid)
+        // await console.log('userId',this.state.user.uid)
+
     }
 
 
 
     handleRemove(key) {
-        base.remove(uid + '/' + key)
+        base.remove(this.state.user.uid + '/' + key)
             .then(() => {
                 console.log('sucesso')
             })
@@ -48,7 +62,7 @@ export default class Projetos extends Component {
     }
 
     listItem(key, projeto) {
-        console.log(key, projeto)
+        // console.log(key, projeto)
         return (
             <div className="col-mb-4" style={{ marginRight: "10px" }}>
                 <div key={key} className="card" style={{ maxWidth: "18rem", marginBottom: "10px" }}>
@@ -71,7 +85,7 @@ export default class Projetos extends Component {
         this.setState({
             key
         })
-        console.log(key)
+        // console.log(key)
     }
 
     handleSave(event, key) {
@@ -81,7 +95,7 @@ export default class Projetos extends Component {
         const descricao = this.descricao.value
 
         this.state.key ?
-            base.update(uid + '/' + this.state.key, {
+            base.update(this.state.user.uid + '/' + this.state.key, {
                 data: {
                     nome,
                     descricao
@@ -94,7 +108,7 @@ export default class Projetos extends Component {
                 console.log(error)
             })
             :
-            base.push(uid, {
+            base.push(this.state.user.uid, {
                 data: {
                     nome,
                     descricao
@@ -113,16 +127,69 @@ export default class Projetos extends Component {
         browserHistory.push('/projetos/galeria')
     }
 
-    render() {
+    handleSearch = () => {
+        this.setState({
+            search: this.search.value
+        })
+    }
 
+    pesquisar = (event) => {
+        event.preventDefault()
+        base.fetch(this.state.user.uid, {
+            context: this,
+            asArray: true,
+            queries: {
+                orderByChild: 'nome',
+                equalTo: this.state.search
+            }
+        }).then(data => {
+            this.setState({
+                resultado: data
+            })
+        }).catch((error) => {
+            console.log(error)
+        })
+
+
+    }
+
+    render() {
         return (
             <div>
                 <div>
-                    <button type="button" className="btn btn-info" data-toggle="modal" data-target="#exampleModal" style={{ marginTop: "10px", marginBottom: "15px", justifyContent:"center", marginLeft: "50px"  }}>Criar Projeto</button>
-                    <div className="row" style={{ display: "flex", flexDirection: "row", justifyContent:"center", marginLeft: "50px" }}>
-                        {Object
+                    <button type="button" className="btn btn-info" data-toggle="modal" data-target="#exampleModal" style={{ marginTop: "10px", marginBottom: "15px", justifyContent: "center", marginLeft: "50px" }}>Criar Projeto</button>
+
+                    <input className="form-control"
+                        ref={ref => this.search = ref}
+                        id='search'
+                        onKeyUp={this.handleSearch}
+                        type='text'
+                        required={false}
+                        style={{ width: "250px", position: "fixed", right: "100px", top: "10px" }}
+                    />
+                    <button className="btn btn-outline-primary" style={{ position: "fixed", right: "10px", top: "10px" }} type="button" onClick={this.pesquisar}>Pesquisar</button>
+
+
+                    <div className="row" style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginLeft: "50px" }}>
+                        
+                        {this.state.resultado.length == 0 && Object
                             .keys(this.state.projetos)
-                            .map(key => this.listItem(key, this.state.projetos[key]))}
+                            .map((key) => {
+
+                                if (this.state.projetos[key].nome.toUpperCase().includes(this.search.value.toUpperCase())) {
+                                    return this.listItem(key, this.state.projetos[key])
+                                  }
+                                // return this.listItem(key, this.state.projetos[key])
+                            })
+                        }
+
+                        { Object
+                            .keys(this.state.resultado)
+                            .map((key) => this.listItem(key, this.state.resultado[key]))
+                        }
+                        </div>
+                        <div className="row" style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginLeft: "50px" }}>
+                        
                     </div>
                 </div>
 
