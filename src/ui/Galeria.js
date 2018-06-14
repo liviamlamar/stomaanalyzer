@@ -3,6 +3,11 @@ import { auth, storage, base, ref } from '../firebase/Firebase'
 import { idProjeto } from '../ui/Projetos'
 import Card from '../components/Card'
 import firebase from 'firebase'
+import ReactExport from "react-data-export"
+
+const ExcelFile = ReactExport.ExcelFile
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn
 
 const style = {
     modal: {
@@ -12,8 +17,16 @@ const style = {
         filter: "alpha(opacity=80)",
         display: "flex",
         flexDirection: "column"
+    },
+
+    botao: {
+        color: "#fff",
+        backgroundColor: "#218838",
+        borderColor: "#1e7e34"
     }
+
 }
+
 
 export default class Galeria extends Component {
     constructor(props) {
@@ -28,7 +41,8 @@ export default class Galeria extends Component {
             indice: '',
             area: '',
             densidade: '',
-            chave: ''
+            chave: '',
+            dataSet: []
         }
 
         this.listItem = this.listItem.bind(this)
@@ -129,12 +143,30 @@ export default class Galeria extends Component {
 
 
         console.log("teste", this.state.estomatos, "teste", this.state.celepidermicas, "teste", this.state.indice, "teste", this.state.area, "teste", this.state.densidade)
+        this.tableToExcel()
 
 
 
 
     }
 
+    async tableToExcel() {
+        const dataSet = await []
+        const objeto = await {
+            ne: this.state.estomatos,
+            ce: this.state.celepidermicas,
+            ie: this.state.indice,
+            area: this.state.area,
+            de: this.state.densidade
+
+        }
+
+        await dataSet.push(objeto)
+
+        await this.setState({
+            dataSet
+        })
+    }
 
     render() {
 
@@ -165,6 +197,16 @@ export default class Galeria extends Component {
                                     <label>Índice: {this.state.indice} </label>
                                     <label>Área Analisada: {this.state.area}</label>
                                     <label>Densidade: {this.state.densidade} </label>
+
+                                    <ExcelFile element={<button type="button" className="btn btn-success" style={{ marginBottom: "5px", display: "flex", marginLeft: "auto", marginRight: "auto" }}>Exportar</button>}>
+                                        <ExcelSheet data={this.state.dataSet} name="Dados">
+                                            <ExcelColumn label="NE" value="ne" />
+                                            <ExcelColumn label="CE" value="ce" />
+                                            <ExcelColumn label="IE" value="ie" />
+                                            <ExcelColumn label="Área" value="area" />
+                                            <ExcelColumn label="DE" value="de" />
+                                        </ExcelSheet>
+                                    </ExcelFile>
                                 </div>
                             </div>
                         </div>
